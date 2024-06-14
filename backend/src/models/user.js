@@ -36,6 +36,10 @@ const User = sequelize.define('User', {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        publicKey: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
     },
     {
         tableName: "users",
