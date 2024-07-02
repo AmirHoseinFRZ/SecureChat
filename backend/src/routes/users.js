@@ -1,10 +1,11 @@
 const express = require("express");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
+const crypto = require('crypto');
 const router = express.Router();
 const {User, userSignUpValidate, userSignInValidate} = require("../models/user");
 const {Op} = require("sequelize");
-const auth = require("../middlewares/auth");
+const auth = require("../middleware/auth");
 
 router.post("/sign-up", async (req, res) => {
     const {error} = userSignUpValidate(req.body);
@@ -34,9 +35,26 @@ router.post("/sign-up", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 512,
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem',
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+        },
+    });
+    user.publicKey = publicKey;
+    user.privateKey = privateKey;
+    console.log(privateKey);
+    console.log(publicKey);
+
+
     await user.save();
 
-    res.send(_.pick(user, ["id", "firstName", "lastName", "email", "phoneNumber"]));
+    res.send(_.pick(user, ["id", "firstName", "lastName", "email", "phoneNumber", "publicKey", "privateKey"]));
 });
 
 router.post("/sign-in", async (req, res) => {

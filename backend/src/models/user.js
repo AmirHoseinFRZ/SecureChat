@@ -1,9 +1,9 @@
 const {sequelize} = require("../../config/db.js");
+const {DataTypes} = require("sequelize");
 
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const Joi = require("joi");
-const crypto = require('crypto');
 
 const User = sequelize.define('User', {
         firstName: {
@@ -37,7 +37,7 @@ const User = sequelize.define('User', {
             allowNull: false,
         },
         publicKey: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         }
     },
@@ -88,23 +88,4 @@ function userSignInValidate(user) {
     return schema.validate(user);
 }
 
-User.beforeCreate(async (user) => {
-    try {
-        const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-            modulusLength: 2048,
-            publicKeyEncoding: {
-                type: 'spki',
-                format: 'pem',
-            },
-            privateKeyEncoding: {
-                type: 'pkcs8',
-                format: 'pem',
-            },
-        });
-        user.publicKey = publicKey;
-        user.privateKey = privateKey; 
-    } catch (error) {
-        throw new Error("Error creating public and private key for user!");
-    }
-});
 module.exports = {User, userSignUpValidate, userSignInValidate};
