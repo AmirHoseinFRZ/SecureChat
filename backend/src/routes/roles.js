@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { Role, roleCreateValidate, roleUpdateValidate } = require('../../models/role');
-const {Permission} = require("../../models/permission");
+const { Role, roleCreateValidate, roleUpdateValidate } = require('../models/role');
+const {Permission} = require("../models/permission");
+const auth = require('../middleware/auth');
 
-router.get('/', ["ROLE_READ"], async (req, res) => {
+router.get('/', auth("ROLE_READ"), async (req, res) => {
     res.send(await Role.findAll());
 });
 
-router.post('/create', ["ROLE_CREATE"],async (req, res) => { // needs middleware to do this
+router.post('/create', auth("ROLE_CREATE"),async (req, res) => { // needs middleware to do this
     const {error} = roleCreateValidate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -26,7 +27,7 @@ router.post('/create', ["ROLE_CREATE"],async (req, res) => { // needs middleware
     res.send(role);
 });
 
-router.put('/:id', ["ROLE_UPDATE"], async (req, res) => {
+router.put('/:id', auth("ROLE_UPDATE"), async (req, res) => {
     const {error} = roleUpdateValidate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -51,7 +52,7 @@ router.put('/:id', ["ROLE_UPDATE"], async (req, res) => {
     res.send(role);
 });
 
-router.delete('/:id', ["ROLE_DELETE"], async (req, res) => {
+router.delete('/:id', auth("ROLE_DELETE"), async (req, res) => {
     const role = await Role.findByPk(req.params.id);
     if (!role) return res.status(400).send("Role doesn't exist.");
 
