@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { Group, groupCreateValidate, GroupUpdateValidate } = require('../../models/group');
 
-router.get('/', async (req, res) => {
+router.get('/', ["GROUP_READ"], async (req, res) => {
     res.send(await Group.findAll());
 });
 
-router.post('/create', async (req, res) => { // needs middleware to do this
+router.post('/create', ["GROUP_CREATE"], async (req, res) => { // needs middleware to do this
     const {error} = groupCreateValidate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -19,7 +19,7 @@ router.post('/create', async (req, res) => { // needs middleware to do this
     res.send(group);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', ["GROUP_UPDATE"], async (req, res) => {
     const {error} = GroupUpdateValidate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -44,7 +44,7 @@ router.put('/:id', async (req, res) => {
     res.send(group);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', ["GROUP_DELETE"], async (req, res) => {
     const group = await Group.findByPk(req.params.id);
     if (!group) return res.status(400).send("Group doesn't exist.");
 

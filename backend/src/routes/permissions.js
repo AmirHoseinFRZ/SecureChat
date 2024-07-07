@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { Permission, permissionCreateValidate } = require('../../models/permission');
 
-router.get('/', async (req, res) => {
+router.get('/', ["PERMISSION_READ"], async (req, res) => {
     res.send(await Permission.findAll());
 });
 
-router.post('/create', async (req, res) => { // needs middleware to do this
+router.post('/create', ["PERMISSION_CREATE"], async (req, res) => { // needs middleware to do this
     const {error} = permissionCreateValidate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
