@@ -85,7 +85,7 @@ module.exports = {
             },
             {
                 roleId: roleId,
-                permissionId: permissionId + 1,
+                permissionId: permissionId + 3,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             }
