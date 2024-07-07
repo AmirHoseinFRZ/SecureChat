@@ -10,8 +10,8 @@ const Group = sequelize.define('Group', {
     }
 }, {tableName: 'groups'});
 
-User.belongsToMany(Permission, { through: 'UserGroups', foreignKey: 'userId' });
-Group.belongsToMany(Role, { through: 'UserGroups', foreignKey: 'groupId' });
+User.belongsToMany(Group, { through: 'userGroups', foreignKey: 'userId' });
+Group.belongsToMany(User, { through: 'userGroups', foreignKey: 'groupId' });
 
 function GroupCreateValidate(group) {
     const schema = Joi.object({
@@ -23,8 +23,8 @@ function GroupCreateValidate(group) {
 function GroupUpdateValidate(group) {
     const schema = Joi.object({
         name: Joi.string(),
-        addGroupIds: Joi.array().items(Joi.number().integer()),
-        removeGroupIds: Joi.array().items(Joi.number().integer())
+        addUserIds: Joi.array().items(Joi.number().integer()),
+        removeUserIds: Joi.array().items(Joi.number().integer())
     });
     return schema.validate(group);
 }
