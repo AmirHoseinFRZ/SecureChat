@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
-const {Admin: User} = require('../models/user');
+const {User} = require('../models/user');
 
 module.exports = function (permission){
     return function (req, res, next) {
@@ -10,14 +10,14 @@ module.exports = function (permission){
             return res.sendStatus(401); // Unauthorized
         }
 
-        jwt.verify(token, config.get('jwtPrivateKey'), async (err, admin) => {
+        jwt.verify(token, config.get('jwtPrivateKey'), async (err, user) => {
             if (err) {
                 return res.sendStatus(403); // Forbidden
             }
-            req.admin = admin;
+            req.user = user;
 
             if (permission) {
-                const user = await User.findByPk(req.admin.id);
+                const user = await User.findByPk(req.user.id);
                 const role = await user.getRoles();
                 let permissions = await role[0].getPermissions();
                 permissions = permissions.map((p) => p.code);
