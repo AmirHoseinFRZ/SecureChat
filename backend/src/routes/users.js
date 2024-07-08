@@ -36,7 +36,7 @@ router.post("/sign-up", async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
 
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-        modulusLength: 512,
+        modulusLength: 2048,
         publicKeyEncoding: {
             type: 'spki',
             format: 'pem',
