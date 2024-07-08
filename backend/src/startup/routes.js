@@ -7,6 +7,7 @@ const groups = require('../routes/groups');
 const roles = require('../routes/roles');
 const permissions = require('../routes/permissions');
 const test = require('../routes/test');
+const decrypt = require('../routes/decryption');
 const error = require('../middleware/error');
 
 module.exports = function (app) {
@@ -19,6 +20,8 @@ module.exports = function (app) {
 	app.use('/api/roles', roles)
 	app.use('/api/permissions', permissions)
 	app.use('/api/test', test)
+	app.use('/api/decrypt', decrypt)
+
 	// other routes
 	app.use(error);
 };
